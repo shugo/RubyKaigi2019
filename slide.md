@@ -407,15 +407,7 @@ Curses.stdscr.timeout = 100 # ms
 
 ## Refresh screen
 
-## Menus and forms
-
-* libmenu: menus
-* libform: forms
-* Not implemented in PDCurses
-
-## Curses::Menu
-
-## Curses::Form
+## Character width
 
 ## Windows console
 
@@ -434,6 +426,20 @@ Curses.stdscr.timeout = 100 # ms
 ## New Windows console
 
 * WriteConsoleOutput() cannot handle full-width characters
+
+## Menus and forms
+
+* libmenu: menus
+* libform: forms
+* Not implemented in PDCurses
+
+## Curses::Menu
+
+## Curses::Form
+
+## TUI Framework
+
+* Textbringer
 
 ## References
 
