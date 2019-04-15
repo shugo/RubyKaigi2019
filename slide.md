@@ -387,6 +387,20 @@ Curses.cbreak   # similar to Curses.raw, but
 Curses.nocbreak # back to cooked mode
 ```
 
+## suspend/resume in raw mode
+
+```ruby
+# register signal handler for resume
+trap(:CONT) do
+  # Refresh screen
+end
+# suspend on ^Z
+c = Curses.get_char
+if c == "\C-z"
+  Process.kill(:STOP, 0)
+end
+```
+
 ## Other configurations
 
 ```ruby
@@ -401,6 +415,7 @@ Curses.stdscr.keypad(true) # enable keypad
 p Curses.get_char #=> "a"
 p Curses.get_char #=> "あ"
 p Curses.get_char #=> 265 (Curses::KEY_F1)
+p Curses.get_char #=> 410 (Curses::KEY_RESIZE on SIGWINCH)
 p Curses.get_char #=> nil (EOF)
 ```
 
@@ -554,7 +569,7 @@ form.unpost
     * Not event driven
         * curses.gem is not a framework, but a library
 
-## TUI Framework
+## Are there any TUI Frameworks?
 
 * Textbringer
 
