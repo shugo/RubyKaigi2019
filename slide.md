@@ -19,6 +19,7 @@ Network Applied Communication Laboratory Ltd.
 ## Products
 
 * Textbringer: Emacs-like text editor
+    * 1.0.0 has been released!
 * Mournmail: Message User Agent on Textbringer
 
 ## Terminal curses?
@@ -276,6 +277,7 @@ EOF
 ## termcap/terminfo
 
 * Database of terminal capabilities
+* ruby-terminfo by akr
 
 ## Input processing
 
@@ -354,6 +356,13 @@ f = IO.console #=> #<File:/dev/tty> or #<File:con$>
 * I'm the original author
 * Maintained by me and Eric Hodel
 
+## Applications
+
+* Textbringer: Emacs-like text editor
+* rfd: filesystem explorer
+* ruby_terminal_games: games
+* twterm: Twitter client
+
 ## Hello world
 
 ```ruby
@@ -406,9 +415,32 @@ Curses.stdscr.timeout = 100 # ms
 
 ## Curses::Window
 
+```ruby
+win = Curses::Window.new(height, width, top, left)
+win.box("|", "-")
+win.setpos(2, 3)
+win.addstr(message)
+win.refresh
+c = win.get_char
+```
+
 ## Refresh screen
 
+* Window#refresh
+    * Update the screen
+* Window#noutrefresh / Curses.doupdate
+    * More efficient than Window#refresh
+    * Window#noutrefresh updates the virtual screen
+    * Curses.doupdate updates the physical screen
+
 ## Character width
+
+* How to know columns needed for a character?
+* wcswidth(3)
+* unicode-display_width.gem
+    * `Unicode::DisplayWidth.of("あ")`
+* East Asian Ambiguous Width
+    * Character width depends on the context
 
 ## Windows console
 
@@ -433,10 +465,89 @@ Curses.stdscr.timeout = 100 # ms
 * libmenu: menus
 * libform: forms
 * Not implemented in PDCurses
+* Supported in curses-1.3.0
 
 ## Curses::Menu
 
+```ruby
+menu = Curses::Menu.new([
+  ["Apple", "Red fruit"],
+  ["Orange", "Orange fruit"],
+  ["Banana", "Yellow fruit"]
+])
+menu.post
+
+while ch = Curses.getch
+  begin
+    case ch
+    when Curses::KEY_UP, ?k
+      menu.up_item
+    when Curses::KEY_DOWN, ?j
+      menu.down_item
+    else
+      break
+    end
+  rescue Curses::RequestDeniedError
+  end
+end
+
+menu.unpost
+```
+
 ## Curses::Form
+
+```ruby
+fields = [
+  Curses::Field.new(1, 10, 4, 18, 0, 0),
+  Curses::Field.new(1, 10, 6, 18, 0, 0)
+]
+fields.each do |field|
+  field.set_back(Curses::A_UNDERLINE)
+  field.opts_off(Curses::O_AUTOSKIP)
+end
+
+form = Curses::Form.new(fields)
+form.post
+
+Curses.setpos(4, 10)
+Curses.addstr("Value 1:")
+Curses.setpos(6, 10)
+Curses.addstr("Value 2:")
+
+while ch = Curses.get_char
+  begin
+    case ch
+    when Curses::KEY_F1
+      break
+    when Curses::KEY_DOWN
+      form.driver(Curses::REQ_NEXT_FIELD)
+      form.driver(Curses::REQ_END_LINE)
+    when Curses::KEY_UP
+      form.driver(Curses::REQ_PREV_FIELD)
+      form.driver(Curses::REQ_END_LINE)
+    when Curses::KEY_RIGHT
+      form.driver(Curses::REQ_NEXT_CHAR)
+    when Curses::KEY_LEFT
+      form.driver(Curses::REQ_PREV_CHAR)
+    when Curses::KEY_BACKSPACE
+      form.driver(Curses::REQ_DEL_PREV)
+    else
+      form.driver(ch)
+    end
+  rescue Curses::RequestDeniedError
+  end
+end
+
+form.unpost
+```
+
+## Pros and cons of menus and forms
+
+* Pros
+    * High-level interface
+* Cons
+    * Not event driven
+        * Framework
 
 ## TUI Framework
 
