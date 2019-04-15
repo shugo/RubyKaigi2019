@@ -440,7 +440,9 @@ c = win.get_char
 * unicode-display_width.gem
     * `Unicode::DisplayWidth.of("あ")`
 * East Asian Ambiguous Width
-    * Character width depends on the context
+    * Character widths depend on the context
+* All layers should use the same width
+    * Applications, curses, terminal emulators
 
 ## Windows console
 
@@ -459,6 +461,8 @@ c = win.get_char
 ## New Windows console
 
 * WriteConsoleOutput() cannot handle full-width characters
+* PDCurses bundled within curses.gem
+  calls WriteConsoleOutput() for each character
 
 ## Menus and forms
 
@@ -546,8 +550,9 @@ form.unpost
 * Pros
     * High-level interface
 * Cons
+    * PDCurses doesn't support menus and forms
     * Not event driven
-        * Framework
+        * curses.gem is not a framework, but a library
 
 ## TUI Framework
 
