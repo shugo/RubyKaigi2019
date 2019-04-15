@@ -171,6 +171,7 @@ open("/dev/tty) { |f| f.ioctl(0x5422) }
       a terminal
         * C's stdout is line buffered
         * Ruby prints backtrace in reverse order
+        * isatty(3)/IO#tty? can be used
     * which open /dev/tty
         * get a password from the controlling termianal
 
@@ -285,16 +286,16 @@ EOF
     * byte oriented
     * data are accumulated in a buffer with timers
 
-## Terminal line discipline
+## Line discipline
 
 ```
-+------------+    +-----------------+    +------------+
-| read/write |<-->| line discipline |<-->| tty driver |
-+------------+    +-----------------|    +------------+
-                     line editing
-                       echoing                   
-                   CR/LF conversion
-                         etc.
++---------+    +-----------------+    +------------+
+| syscall |<-->| line discipline |<-->| tty driver |
++---------+    +-----------------|    +------------+
+  read(2)             TTY                console
+  write(2)            SLIP               serial
+                      MOUSE              pty
+                      PPP
 ```
 
 ## Special input characters
@@ -318,7 +319,7 @@ EOF
 require "io/console"
 password = STDIN.noecho {
   # no echo back
-  STDIN.gets.chomp
+  STDIN.gets(chomp: true)
 }
 ```
 
