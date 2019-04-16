@@ -46,7 +46,7 @@ Network Applied Communication Laboratory Ltd.
 
 ## Target platforms
 
-* GNU/Linux, unless otherwise explictly stated
+* GNU/Linux, unless otherwise explicitly stated
 * Most topics apply to other Unix-like platforms
 * A few topics on Windows
 
@@ -440,7 +440,7 @@ Curses.get_char #=> nil (EOF)
 
 * Most terminals send not "\M-a" but "\ea" by Alt-a
 
-## Unavaiable keys
+## Unavailable keys
 
 * Modifiers themselves (Shift, Ctrl, Alt)
 * Combinations such as Ctrl-%
