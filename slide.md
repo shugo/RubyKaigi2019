@@ -22,6 +22,10 @@ Network Applied Communication Laboratory Ltd.
     * 1.0.0 has been released!
 * Mournmail: Message User Agent on Textbringer
 
+## Textbringer sticker
+
+![sticker](sticker.jpg)
+
 ## Terminal curses?
 
 * terminal
@@ -458,6 +462,10 @@ c = win.get_char
     * Character widths depend on the context
 * All layers should use the same width
     * Applications, curses, terminal emulators
+
+## New Windows console bug?
+
+![broken screen](win_fullwidth_ng.png)
 
 ## Windows console
 
