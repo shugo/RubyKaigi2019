@@ -147,6 +147,20 @@ end
 open("/dev/tty) { |f| f.ioctl(0x5422) }
 ```
 
+## Attach the controlling terminal
+
+```ruby
+# Linux
+open("/dev/pty/3") # the process must be a session leader
+# explicit
+open("/dev/pty/3") { |f| f.ioctl(TIOCSCTTY, 0) } 
+# steel /dev/pty/3 even if it's a control terminal
+# of another session; CAP_SYS_ADMIN is needed
+open("/dev/pty/3") { |f| f.ioctl(TIOCSCTTY, 1) }
+# FreeBSD
+open("/dev/pty/3") { |f| f.ioctl(TIOCSCTTY) }
+```
+
 ## pty
 
 * Pseudo terminal
@@ -306,6 +320,8 @@ EOF
 
 ## Special input characters
 
+* ^M: carriage return
+* ^J: line feed
 * ^D: end of file
 * ^C: interrupt (SIGINT)
 * ^\: quit (SIGQUIT)
@@ -423,6 +439,17 @@ p Curses.get_char #=> 410 (Curses::KEY_RESIZE on SIGWINCH)
 p Curses.get_char #=> nil (EOF)
 ```
 
+## Alt key
+
+* Most terminals send not "\M-a" but "\ea" by Alt-a
+
+## Unavaiable keys
+
+* Modifiers themselves (Shift, Ctrl, Alt)
+* Combinations such as Ctrl-%
+    * Some terminals can be customized to send escape
+      sequences for such combinations
+
 ## Non blocking read
 
 ```ruby
@@ -455,6 +482,8 @@ c = win.get_char
 ## Character width
 
 * How to know columns needed for a character?
+* Write the character and get the cursor position
+    * `"\e[6n"` -> `"\e[<row>;<col>R"`
 * wcswidth(3)
 * unicode-display_width.gem
     * `Unicode::DisplayWidth.of("あ")`
