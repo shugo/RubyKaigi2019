@@ -151,14 +151,13 @@ open("/dev/tty) { |f| f.ioctl(0x5422) }
 
 ```ruby
 # Linux
-open("/dev/pty/3") # the process must be a session leader
+open("/dev/pts/3")
 # explicit
-open("/dev/pty/3") { |f| f.ioctl(TIOCSCTTY, 0) } 
-# steel /dev/pty/3 even if it's a control terminal
-# of another session; CAP_SYS_ADMIN is needed
-open("/dev/pty/3") { |f| f.ioctl(TIOCSCTTY, 1) }
+open("/dev/pts/3") { |f| f.ioctl(TIOCSCTTY, 0) } 
+# steel /dev/pts/3
+open("/dev/pts/3") { |f| f.ioctl(TIOCSCTTY, 1) }
 # FreeBSD
-open("/dev/pty/3") { |f| f.ioctl(TIOCSCTTY) }
+open("/dev/pts/3") { |f| f.ioctl(TIOCSCTTY) }
 ```
 
 ## pty
@@ -201,8 +200,7 @@ require "pty"
 master, slave = PTY.open
 read, write = IO.pipe
 pid = spawn("factor", in: read, out: slave)
-read.close
-slave.close
+read.close; slave.close
 write.puts "42"
 p master.gets # "42: 2 3 7\r\n" expected
               # but deadlock on Debian 9.3
@@ -276,8 +274,8 @@ puts "\e[31mRed Ruby\e[0m"
 
 ## Sixel
 
-* Six pixels
 * Bitmap graphics format supported by DEC terminals
+* Six pixels encoded in a single ASCII character
 
 ## Example of Sixel
 
@@ -323,6 +321,7 @@ EOF
 * ^M: carriage return
 * ^J: line feed
 * ^D: end of file
+* ^H: backspace
 * ^C: interrupt (SIGINT)
 * ^\: quit (SIGQUIT)
 * ^Z: suspend (SIGTSTP)
@@ -332,7 +331,7 @@ EOF
 
 ## io/console
 
-* A standard library of Ruby
+* Part of the Ruby standard library
 * Provides additional methods for IO
 
 ## IO#noecho
@@ -372,8 +371,8 @@ f = IO.console #=> #<File:/dev/tty> or #<File:con$>
 ## curses.gem
 
 * Formerly part of the Ruby standard library
-* Removed in Ruby 2.1
 * I'm the original author
+* Removed in Ruby 2.1
 * Maintained by me and Eric Hodel
 
 ## Applications
@@ -388,11 +387,11 @@ f = IO.console #=> #<File:/dev/tty> or #<File:con$>
 ```ruby
 require "curses"
 Curses.init_screen
-Curses.setpos(4, 10)
-Curses.addstr("Hello, world")
+Curses.setpos(4, 10)          # Move cursor
+Curses.addstr("Hello, world") # print string
 Curses.setpos(5, 10)
 Curses.addstr("Press any key: ")
-Curses.get_char
+Curses.get_char               # Read a character
 Curses.close_screen
 ```
 
@@ -416,9 +415,7 @@ trap(:CONT) do
 end
 # suspend on ^Z
 c = Curses.get_char
-if c == "\C-z"
-  Process.kill(:STOP, 0)
-end
+Process.kill(:STOP, 0) if c == "\C-z"
 ```
 
 ## Other configurations
@@ -432,11 +429,11 @@ Curses.stdscr.keypad(true) # enable keypad
 ## Read characters
 
 ```ruby
-p Curses.get_char #=> "a"
-p Curses.get_char #=> "あ"
-p Curses.get_char #=> 265 (Curses::KEY_F1)
-p Curses.get_char #=> 410 (Curses::KEY_RESIZE on SIGWINCH)
-p Curses.get_char #=> nil (EOF)
+Curses.get_char #=> "a"
+Curses.get_char #=> "あ"
+Curses.get_char #=> 265 (Curses::KEY_F1)
+Curses.get_char #=> 410 (Curses::KEY_RESIZE on SIGWINCH)
+Curses.get_char #=> nil (EOF)
 ```
 
 ## Alt key
@@ -512,7 +509,7 @@ c = win.get_char
 
 ## New Windows console
 
-* WriteConsoleOutput() cannot handle full-width characters
+* WriteConsoleOutput() cannot handle fullwidth characters
 * PDCurses bundled within curses.gem
   calls WriteConsoleOutput() for each character
 
