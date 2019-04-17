@@ -365,6 +365,7 @@ f = IO.console #=> #<File:/dev/tty> or #<File:con$>
 * Terminal control library
 * Pun on "cursor optimization"
 * ncurses: new curses
+* ncursesw: ncurses with wide character support
 * PDCurses: public domain curses
     * Windows support
 
@@ -488,6 +489,13 @@ c = win.get_char
     * Character widths depend on the context
 * All layers should use the same width
     * Applications, curses, terminal emulators
+
+## wcwidth(3) hacks for CJK
+
+* LD_PRELOAD
+    * https://github.com/fumiyas/wcwidth-cjk
+* modified charmap
+    * https://github.com/hamano/locale-eaw
 
 ## New Windows console bug?
 
