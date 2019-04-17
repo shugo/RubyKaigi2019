@@ -152,12 +152,12 @@ open("/dev/tty) { |f| f.ioctl(0x5422) }
 ```ruby
 # Linux
 open("/dev/pts/3")
-# explicit
-open("/dev/pts/3") { |f| f.ioctl(TIOCSCTTY, 0) } 
+# explicit; ioctl(TIOCSCTTY)
+open("/dev/pts/3") { |f| f.ioctl(0x540E, 0) } 
 # steel /dev/pts/3
-open("/dev/pts/3") { |f| f.ioctl(TIOCSCTTY, 1) }
+open("/dev/pts/3") { |f| f.ioctl(0x540E, 1) }
 # FreeBSD
-open("/dev/pts/3") { |f| f.ioctl(TIOCSCTTY) }
+open("/dev/pts/3") { |f| f.ioctl(0x540E) }
 ```
 
 ## pty
