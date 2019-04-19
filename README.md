@@ -482,7 +482,7 @@ c = win.get_char
 * How to know columns needed for a character?
 * Write the character and get the cursor position
     * `"\e[6n"` -> `"\e[<row>;<col>R"`
-* wcswidth(3)
+* wcwidth(3)
 * unicode-display_width.gem
     * `Unicode::DisplayWidth.of("あ")`
 * East Asian Ambiguous Width
